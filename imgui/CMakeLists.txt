@@ -11,14 +11,24 @@ find_package(SDL2)
 
 add_subdirectory(libs/imgui)
 
-include_directories(include
-  libs/imgui/include
-  ${OPENGL_INCLUDE_DIR}
-  ${glfw3_INCLUDE_DIRS}
-  ${SDL2_INCLUDE_DIRS}
-)
-
-# OpenBSD doesn't have OpenGL3 yet?
+if(APPLE)
+  # OSX does not include X11 by default and some SDL2 installations require it, so add it here.
+  find_package(X11)
+  include_directories(include
+    libs/imgui/include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIRS}
+  )
+else()
+  include_directories(include
+    libs/imgui/include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+  )
+endif(APPLE)
 # The sample using OpenGL2 and GLFW window
 add_executable(opengl2_example
   src/main.cpp
