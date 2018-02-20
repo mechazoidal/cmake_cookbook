@@ -1,3 +1,6 @@
+// Taken directly from: https://gist.github.com/piaoger/66de3489d771c2ec57c7
+// with a slight modification to line 127 for font directory.
+
 // An OpenGL3 Exmaple: glew, glfw and nanovg.
 // 2D and 3D in same scene. Torus is drawn with static display list.
  
@@ -121,9 +124,7 @@ int main(){
         printf("Could not initialize nanovg.\n");
         return -1;
     }
-    // FIXME should insert this at compile time using fc-config and cmake macro
-    //int font = nvgCreateFont(vg, "font", "../example/Roboto-Regular.ttf");
-    int font = nvgCreateFont(vg, "font", "/usr/local/share/fonts/roboto/Roboto-Regular.ttf");
+    int font = nvgCreateFont(vg, "font", "../media/NotoSansUI-Regular.ttf");
     if (font < 0) {
         printf("nvgCreateFont() failed\n");
         return -1;

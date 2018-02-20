@@ -24,14 +24,12 @@ include_directories(libs/nanovg/src
 )
 
 add_executable(nanovg_torus
-  torus.cpp
+  src/torus.cpp
 )
 
 target_link_libraries(nanovg_torus
   ${GLEW_LIBRARIES}
   nanovg
   glfw
+  ${OPENGL_LIBRARIES}
 )
-
-# TODO insert font using:
-# fc-list | grep Roboto-Regular | cut -d: -f1
