@@ -19,7 +19,7 @@ if(APPLE)
     ${OPENGL_INCLUDE_DIR}
     ${glfw3_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
-    ${X11_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIR}
   )
 else()
   include_directories(include
