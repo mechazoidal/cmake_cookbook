@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(test_minizip)
 
-find_package(zlib)
+find_package(ZLIB)
 find_package(PkgConfig)
 pkg_check_modules(UNZIP minizip)
 
