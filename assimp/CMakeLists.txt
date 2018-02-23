@@ -6,8 +6,9 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
 # Use DownloadProject: https://github.com/Crascit/DownloadProject
-# DownloadProject uses variables specific to 3.2+ : prevent errors on older versions
-if (CMAKE_VERSION VERSION_LESS 3.2)
+# cmake's ExternalProject < 3.8.0 has bugs when using URL download,
+# so don't attempt caching if using an older version
+if (CMAKE_VERSION VERSION_LESS 3.8)
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "")
 else()
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "UPDATE_DISCONNECTED 1")
