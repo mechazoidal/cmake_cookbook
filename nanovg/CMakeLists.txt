@@ -1,8 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-# use with piaoger/nanovg_torus.cpp , https://gist.github.com/piaoger/66de3489d771c2ec57c7
-# Project structure:
-# libs/nanovg/<src>
-# also don't forget to change/add the font
 
 project(nanovg_torus)
 
