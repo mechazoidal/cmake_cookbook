@@ -1,4 +1,4 @@
-
+// wuclient.c from http://zguide.zeromq.org/page:all
 
 //  Weather update client
 //  Connects SUB socket to tcp://localhost:5556

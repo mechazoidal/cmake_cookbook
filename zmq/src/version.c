@@ -1,5 +1,4 @@
-
-
+// version.c from http://zguide.zeromq.org/page:all
 //  Report 0MQ version
 
 #include <zmq.h>

@@ -1,4 +1,4 @@
-
+// wuclient.c from http://zguide.zeromq.org/page:all
 
 //  Weather update server
 //  Binds PUB socket to tcp://*:5556
