@@ -71,7 +71,7 @@ find_package(SDL2)
 ```
 
 We have imported all of the packages we need, so it is safe to include the ImGui subdirectory in `libs`.
-One of the easily-overlooked quirks of CMake is that every CMakeLists.txt file creates its own variable space. Much like fork() in Unix, the child CMakeLists.txt file will INHERIT variables from the parent, but after that is expected to keep its own. If you expect to use libraries or variables in subdirectories, they must be set BEFORE the `add_subdirectory` call.
+One of the easily-overlooked quirks of CMake is that every CMakeLists.txt file creates its own variable space. Much like `fork()` in Unix, the child CMakeLists.txt file will INHERIT variables from the parent, but after that is expected to keep its own. If you expect to use libraries or variables in subdirectories, they must be set BEFORE the `add_subdirectory` call.
 (There are ways around this as demonstrated in the _assimp_ project, but they are not meant to be used on a regular basis)
 ```
 add_subdirectory(libs/imgui)

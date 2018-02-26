@@ -56,7 +56,7 @@ With our project module set, find the library in the system.
 find_package(ZeroMQ)
 ```
 
-An example of echoing a variable set by find_package: CMake will already echo the version it finds, but try moving this before the find_package call and see what is printed.
+An example of echoing a variable set by `find_package`: CMake will already echo the version it finds, but try moving this before the `find_package` call and see what is printed.
 ```
 message(STATUS "ZeroMQ version: ${ZeroMQ_VERSION}")
 ```
@@ -83,7 +83,7 @@ add_executable(version
 
 Link our executables.
 Note that libraries may be linked to a target immediately after declaring it
-with add_executable, but I prefer to keep them in one section.
+with `add_executable`, but I prefer to keep them in one section.
 ```
 target_link_libraries(wuclient
   ${ZeroMQ_LIBRARIES}

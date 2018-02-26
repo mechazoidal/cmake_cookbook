@@ -38,7 +38,7 @@ Since we know we are going to need pkg-config, request the built-in PkgConfig CM
 ```
 find_package(PkgConfig)
 ```
-There are two major ways to find pkg-config modules: `pkg_search_module`, and `pkg_check_modules`. They have slightly differing syntaxes. I prefer to use pkg_check_modules to enforce the requirement.
+There are two major ways to find pkg-config modules: `pkg_search_module`, and `pkg_check_modules`. They have slightly differing syntaxes. I prefer to use `pkg_check_modules` to enforce the requirement.
 ```
 pkg_check_modules(UNZIP minizip)
 ```
@@ -82,9 +82,9 @@ target_link_libraries(miniunzip
 ## Use
 Let's make our build dir and run cmake like usual:
 ```
-mkdir build
-cd build
-cmake ..
+$ mkdir build
+$ cd build
+$ cmake ..
 ```
 
 After the usual compiler detection, you should see this output:
@@ -92,12 +92,13 @@ After the usual compiler detection, you should see this output:
 -- Found ZLIB: /usr/lib/libz.so.5.0 (found version "1.2.3") 
 -- Found PkgConfig: /usr/bin/pkg-config (found version "0.27.1") 
 -- Checking for module 'minizip'
+--   Found minizip, version 1.2.11
 ```
 (location and version numbers will vary on your system)
 
 Then we can execute:
 ```
-make
-minizip test.zip ../src/minizip.c
-file test.zip
+$ make
+$ minizip test.zip ../src/minizip.c
+$ file test.zip
 ```
