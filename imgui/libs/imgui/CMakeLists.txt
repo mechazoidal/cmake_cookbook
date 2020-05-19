@@ -1,8 +1,21 @@
-message(STATUS "processing imgui")
+target_include_directories(imgui
+  PUBLIC
+  include
+)
 
-include_directories(include)
-add_library(imgui
+target_sources(imgui
+  PRIVATE
+  include/stb_truetype.h
+  include/imgui.h
+  include/imgui_internal.h
+  include/imstb_textedit.h
+  include/stb_rect_pack.h
+  include/imconfig.h
+  include/stb_textedit.h
+  include/imstb_rectpack.h
+  include/imstb_truetype.h
   imgui.cpp
-  imgui_demo.cpp
   imgui_draw.cpp
+  imgui_demo.cpp
+  imgui_widgets.cpp
 )

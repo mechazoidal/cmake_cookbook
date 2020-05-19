@@ -1,43 +1,30 @@
-cmake_minimum_required(VERSION 2.8)
-project(imgui_example)
+cmake_minimum_required(VERSION 3.13...3.16)
+include(CMakePrintHelpers)
+
+project(imgui_example VERSION 1.1 LANGUAGES C CXX)
 
 # For the straight OpenGL2 example
-find_package(glfw3 CONFIG REQUIRED)
-# required for GLU includes
-find_package(OpenGL)
+find_package(glfw3 3.3 REQUIRED)
+# required for GLU includes and linking
+find_package(OpenGL REQUIRED)
 
-# No need for a specialised FindSDL2.cmake module, as of 3.9.3+(?)
-find_package(SDL2)
+# For using OpenGL2 with SDL window
+find_package(SDL2 REQUIRED)
 
+add_library(imgui "")
 add_subdirectory(libs/imgui)
 
-if(APPLE)
-  # OSX does not include X11 by default and some SDL2 installations require it, so add it here.
-  find_package(X11)
-  include_directories(include
-    libs/imgui/include
-    ${OPENGL_INCLUDE_DIR}
-    ${glfw3_INCLUDE_DIRS}
-    ${SDL2_INCLUDE_DIRS}
-    ${X11_INCLUDE_DIR}
-  )
-else()
-  include_directories(include
-    libs/imgui/include
-    ${OPENGL_INCLUDE_DIR}
-    ${glfw3_INCLUDE_DIRS}
-    ${SDL2_INCLUDE_DIRS}
-  )
-endif(APPLE)
 # The sample using OpenGL2 and GLFW window
 add_executable(opengl2_example
   src/main.cpp
   src/imgui_impl_glfw.cpp
+  src/imgui_impl_opengl2.cpp
 )
 
 target_link_libraries(opengl2_example
+  PRIVATE
   imgui
-  ${OPENGL_LIBRARIES}
+  OpenGL::GL
   glfw
 )
 
@@ -45,10 +32,42 @@ target_link_libraries(opengl2_example
 add_executable(sdl_opengl2_example
   src/main_sdl.cpp
   src/imgui_impl_sdl.cpp
+  src/imgui_impl_opengl2.cpp
 )
 
 target_link_libraries(sdl_opengl2_example
+  PRIVATE
   imgui
-  ${SDL2_LIBRARIES}
-  ${OPENGL_LIBRARIES}
+  SDL2
+  OpenGL::GL
+)
+
+# if(APPLE)
+#   # OSX does not include X11 by default and some SDL2 installations require it, so add it here.
+#   find_package(X11)
+#   include_directories(include
+#     ${OPENGL_INCLUDE_DIR}
+#     ${glfw3_INCLUDE_DIRS}
+#     ${SDL2_INCLUDE_DIRS}
+#     ${X11_INCLUDE_DIR}
+#   )
+# else()
+  target_include_directories(opengl2_example
+    PUBLIC
+    include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+  )
+  target_include_directories(sdl_opengl2_example
+    PUBLIC
+    include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+  )
+# endif(APPLE)
+cmake_print_properties(
+    TARGETS opengl2_example sdl_opengl2_example
+    PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES
 )
