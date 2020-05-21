@@ -1,6 +1,8 @@
 # Minizip
 [Minizip](http://www.winimage.com/zLibDll/minizip.html) is a simple ZIP-file library, using zlib. zlib is part of almost every OS distribution, while minizip is not. Unlike other CMake-ready libraries, Minizip packages come with pkg-config files, so the `find_package` call will not work. Here we show how to use pkg-config from CMake, along with why it's not preferred.
 
+Since the executables are relatively small, we also demonstrate a simple usage of CPack to package them for other distributions.
+
 ## Requirements
 
 Linux:

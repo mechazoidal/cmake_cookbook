@@ -12,7 +12,7 @@ Generally to build each, the following usage is encouraged:
 ```
 $ mkdir build
 $ cd build
-$ cmake ..
+cmake -S .. -B .
 $ <build system invocation, usually 'make'>
 ```
 
@@ -27,11 +27,13 @@ Don't forget there are many ways of running CMake beyond the standard CLI invoca
   - OpenBSD 6.2
   - OSX 10.11 w/ Macports 2.4.2
   - Debian stretch
+  - NixOS 20.02
 
 There should be no issues with running these examples on Windows, but no testing has been performed due to lack of access to a Windows system.
 
 ## Requirements:
-### Linux:
+As of 2020, the minimum CMake version has been bumped up to 3.13+.
+### Debian:
   - build-essential
   - git
   - cmake
