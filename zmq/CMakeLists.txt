@@ -4,15 +4,16 @@ include(CMakePrintHelpers)
 project(zmq_example VERSION 1.0 LANGUAGES C)
 
 # With our project module set, find the library in the system.
-find_package(ZeroMQ 4.3 REQUIRED)
+# find_package(ZeroMQ 4.3 REQUIRED)
+find_package(ZeroMQ 4.3 CONFIG)
+
+# OPENBSD
 
 # An example of echoing a variable set by find_package
 message(STATUS "ZeroMQ version: ${ZeroMQ_VERSION}")
 
-# include_directories applies to ALL following targets once set.
-include_directories(
-  ${ZeroMQ_INCLUDE_DIR}
-)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZeroMQ REQUIRED IMPORTED_TARGET libzmq)
 
 # Declare our executable targets and their sources
 add_executable(wuclient
@@ -49,16 +50,19 @@ target_include_directories(version
 target_link_libraries(wuclient
   PRIVATE
   zmq
+  PkgConfig::ZeroMQ
 )
 
 target_link_libraries(wuserver
   PRIVATE
   zmq
+  PkgConfig::ZeroMQ
 )
 
 target_link_libraries(version
   PRIVATE
   zmq
+  PkgConfig::ZeroMQ
 )
 cmake_print_properties(
     TARGETS wuclient
