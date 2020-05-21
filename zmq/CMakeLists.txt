@@ -4,7 +4,7 @@ include(CMakePrintHelpers)
 project(zmq_example VERSION 1.0 LANGUAGES C)
 
 # With our project module set, find the library in the system.
-find_package(ZeroMQ)
+find_package(ZeroMQ 4.3 REQUIRED)
 
 # An example of echoing a variable set by find_package
 message(STATUS "ZeroMQ version: ${ZeroMQ_VERSION}")

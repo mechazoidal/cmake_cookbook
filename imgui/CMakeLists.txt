@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 # For using OpenGL2 with SDL window
 find_package(SDL2 REQUIRED)
 
+# Required to create a blank variable for when add_subdirectory is called
 add_library(imgui "")
 add_subdirectory(libs/imgui)
 
@@ -38,26 +39,34 @@ add_executable(sdl_opengl2_example
 target_link_libraries(sdl_opengl2_example
   PRIVATE
   imgui
-  SDL2
+  ${SDL2_LIBRARIES}
   OpenGL::GL
 )
 
-# if(APPLE)
-#   # OSX does not include X11 by default and some SDL2 installations require it, so add it here.
-#   find_package(X11)
-#   include_directories(include
-#     ${OPENGL_INCLUDE_DIR}
-#     ${glfw3_INCLUDE_DIRS}
-#     ${SDL2_INCLUDE_DIRS}
-#     ${X11_INCLUDE_DIR}
-#   )
-# else()
+if(APPLE)
+  # On OSX, X11 is explicitly required to use OpenGL outside of a Cocoa framework, so add it here.
+  find_package(X11)
   target_include_directories(opengl2_example
     PUBLIC
     include
     ${OPENGL_INCLUDE_DIR}
     ${glfw3_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIR}
+  )
+  target_include_directories(sdl_opengl2_example
+    PUBLIC
+    include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIR}
+  )
+else()
+  target_include_directories(opengl2_example
+    PUBLIC
+    include
+    ${OPENGL_INCLUDE_DIR}
+    ${glfw3_INCLUDE_DIRS}
   )
   target_include_directories(sdl_opengl2_example
     PUBLIC
@@ -66,7 +75,7 @@ target_link_libraries(sdl_opengl2_example
     ${glfw3_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
   )
-# endif(APPLE)
+endif(APPLE)
 cmake_print_properties(
     TARGETS opengl2_example sdl_opengl2_example
     PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES

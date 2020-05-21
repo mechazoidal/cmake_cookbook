@@ -29,6 +29,9 @@ target_link_libraries(nanovg_torus
   OpenGL::GL
 )
 
+cmake_print_variables(OPENGL_GLU_FOUND)
+cmake_print_variables(OPENGL_LIBRARIES)
+
 cmake_print_properties(
     TARGETS nanovg_torus
     PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES

@@ -3,17 +3,8 @@ include(CMakePrintHelpers)
 project(test_minizip VERSION 1.0 LANGUAGES C)
 
 find_package(ZLIB REQUIRED)
-find_package(PkgConfig)
-pkg_check_modules(UNZIP minizip)
-
-include_directories(include
-  ${UNZIP_INCLUDEDIR}
-)
-
-# TODO document "Little libraries" https://cliutils.gitlab.io/modern-cmake/chapters/features/small.html
-# find_library(ZLIB z)
-
-find_library(minizip_LIBRARY minizip)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(UNZIP REQUIRED IMPORTED_TARGET minizip)
 
 add_executable(minizip_e
   src/minizip.c
@@ -23,18 +14,28 @@ add_executable(miniunzip_e
   src/miniunzip.c
 )
 
+target_include_directories(minizip_e
+  PUBLIC
+  ${UNZIP_INCLUDEDIR}
+)
+
+target_include_directories(miniunzip_e
+  PUBLIC
+  ${UNZIP_INCLUDEDIR}
+)
+
 target_link_libraries(minizip_e
   PRIVATE
   z
-  minizip
+  PkgConfig::UNZIP
 )
 
 target_link_libraries(miniunzip_e
   PRIVATE
   z
-  minizip
+  PkgConfig::UNZIP
 )
 cmake_print_properties(
-    TARGETS minizip_e
+    TARGETS miniunzip_e
     PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES
 )
