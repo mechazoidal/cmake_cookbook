@@ -61,6 +61,7 @@ target_include_directories(assimp_simpleogl
 
 target_link_libraries(assimp_simpleogl
   OpenGL::GL
+  OpenGL::GLU
   GLUT::GLUT
   assimp
 )

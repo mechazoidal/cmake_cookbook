@@ -4,7 +4,7 @@ include(CMakePrintHelpers)
 project(imgui_example VERSION 1.1 LANGUAGES C CXX)
 
 # For the straight OpenGL2 example
-find_package(glfw3 3.3 REQUIRED)
+find_package(glfw3 3.2 REQUIRED)
 # required for GLU includes and linking
 find_package(OpenGL REQUIRED)
 

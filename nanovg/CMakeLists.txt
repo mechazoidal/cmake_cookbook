@@ -10,7 +10,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
 # glfw3's is NOT
-find_package(glfw3 3.3 REQUIRED)
+find_package(glfw3 3.2 REQUIRED)
 
 add_library(nanovg "")
 add_subdirectory(libs/nanovg)
@@ -24,7 +24,7 @@ target_link_libraries(nanovg_torus
   PRIVATE
   nanovg
   GLEW::GLEW
-  GLU
+  OpenGL::GLU
   glfw
   OpenGL::GL
 )
