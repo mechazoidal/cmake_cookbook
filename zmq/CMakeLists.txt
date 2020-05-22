@@ -8,7 +8,7 @@ find_package(ZeroMQ 4.3 CONFIG)
 
 # If the platform's zeromq package doesn't have a proper cmake config but is known to pkg-config,
 # import it from there.
-if(NOT ZeroMQ_FOUND)
+if(NOT ZeroMQ_DIR)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(ZeroMQ REQUIRED IMPORTED_TARGET libzmq)
 endif()
@@ -47,22 +47,22 @@ target_include_directories(version
 
 # Link our executables.
 # Since the target name may vary depending on if PkgConfig was used,
-# we cover all bases using generator expressions for the known target names.
+# we cover all possibilities using generator expressions.
 target_link_libraries(wuclient
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:libzmq>
   $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
 
 target_link_libraries(wuserver
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:libzmq>
   $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
 
 target_link_libraries(version
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:libzmq>
   $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
 
