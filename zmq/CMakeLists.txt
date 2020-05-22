@@ -4,16 +4,17 @@ include(CMakePrintHelpers)
 project(zmq_example VERSION 1.0 LANGUAGES C)
 
 # With our project module set, find the library in the system.
-# find_package(ZeroMQ 4.3 REQUIRED)
 find_package(ZeroMQ 4.3 CONFIG)
 
-# OPENBSD
+# If the platform's zeromq package doesn't have a proper cmake config but is known to pkg-config,
+# import it from there.
+if(NOT ZeroMQ_FOUND)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(ZeroMQ REQUIRED IMPORTED_TARGET libzmq)
+endif()
 
-# An example of echoing a variable set by find_package
+# An example of echoing a variable set by find_package/pkg_check_modules
 message(STATUS "ZeroMQ version: ${ZeroMQ_VERSION}")
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(ZeroMQ REQUIRED IMPORTED_TARGET libzmq)
 
 # Declare our executable targets and their sources
 add_executable(wuclient
@@ -31,39 +32,40 @@ add_executable(version
 target_include_directories(wuclient
   PUBLIC
   include
-  ${ZeroMQ_INCLUDE_DIR}
+  ${ZeroMQ_INCLUDE_DIRS}
 )
 target_include_directories(wuserver
   PUBLIC
   include
-  ${ZeroMQ_INCLUDE_DIR}
+  ${ZeroMQ_INCLUDE_DIRS}
 )
 target_include_directories(version
   PUBLIC
   include
-  ${ZeroMQ_INCLUDE_DIR}
+  ${ZeroMQ_INCLUDE_DIRS}
 )
 
 # Link our executables.
-# Note that libraries may be linked to a target immediately after declaring it
-# with add_executable, but I prefer to keep them in one section.
+# Since the target name may vary depending on if PkgConfig was used,
+# we cover all bases using generator expressions for the known target names.
 target_link_libraries(wuclient
   PRIVATE
-  zmq
-  PkgConfig::ZeroMQ
+  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
 
 target_link_libraries(wuserver
   PRIVATE
-  zmq
-  PkgConfig::ZeroMQ
+  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
 
 target_link_libraries(version
   PRIVATE
-  zmq
-  PkgConfig::ZeroMQ
+  $<TARGET_NAME_IF_EXISTS:zmq>
+  $<TARGET_NAME_IF_EXISTS:PkgConfig::ZeroMQ>
 )
+
 cmake_print_properties(
     TARGETS wuclient
     PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES
