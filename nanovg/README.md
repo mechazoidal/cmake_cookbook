@@ -1,7 +1,7 @@
 # NanoVG
 [NanoVG](https://github.com/memononen/nanovg) is a small UI library for OpenGL, with an API modeled after the HTML5 Canvas API. Like [stb](https://github.com/nothings/stb), it's easy to include inside your project instead of importing a package from a repository. 
 
-This source sample is from a [gist](https://gist.github.com/piaoger/66de3489d771c2ec57c7) showing how to render a simple torus and string using NanoVG. A CMakeLists.txt file was added to the nanovg directory to show usage of a `add_subdirectory`.
+This source sample is from a [gist](https://gist.github.com/piaoger/66de3489d771c2ec57c7) showing how to render a simple torus and string using NanoVG. A CMakeLists.txt file was added to the nanovg directory to show usage of a user-defined pair of `add_library`/`add_subdirectory`.
 
 Note that NanoVG does not provide fonts directly, expecting the user to pass locations during compile-time. In the interest of having a working example(and not trying to guess font paths), the "NotoSansUI-Regular.ttf" file is included from [Google's Noto fonts collection](https://www.google.com/get/noto/) , licensed under SIL OFL 1.1
 
@@ -47,19 +47,19 @@ nanovg
 
 ## CMakeLists walkthrough
 ### CMakeLists.txt
-Declare our minimum cmake. There are no real advanced features used, so I usually use 2.8 as an absolute minimum. In 2018+ it's probably safe to use at least 3.0.
+Declare our minimum cmake version range. 3.13 should be considered a "minimum" in 2020 and most systems at the time of this writing usually have 3.16
 ```
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.13...3.16)
 ```
 
 Declare our project. This should always be the first statement outside of `cmake_minimum_required`, as most variables will not exist until this call.
+Our sample source file is a C++ file and nanovg is a C library, so we hint to cmake that both languages will be used.
 ```
-project(nanovg_torus)
+project(nanovg_torus VERSION 1.0 LANGUAGES C CXX)
 ```
-OpenGL(specifically GLU) is required, so request it here
+OpenGL(specifically GLU) is required, so request it here. We can't continue without it, so it is marked as required.
 ```
-# required for GLU includes
-find_package(OpenGL)
+find_package(OpenGL REQUIRED)
 ```
 
 CMake's case-sensitivity for packages depends on the host OS's filesystem. GLEW is usually provided in ALL-CAPS, so request it here.
@@ -67,60 +67,53 @@ CMake's case-sensitivity for packages depends on the host OS's filesystem. GLEW 
 find_package(GLEW REQUIRED)
 ```
 
-glfw is usually shipped as 'glfw3', so take that into account. Note the use of `CONFIG` in the `find_package` call: this is because CMake ships a `glfw3Config.cmake` file OUTSIDE of our project.
-This [StackOverflow answer](https://stackoverflow.com/questions/20746936/cmake-of-what-use-is-find-package-if-you-need-to-specify-cmake-module-path-an) is a good in-depth look at the difference between Module and Config modes in `find_package`
+glfw is usually shipped as 'glfw3', so take that into account. We also request version 3.2 or higher of the package.
+The previous version of this `find_package` example used Config mode but Kitware now recommends using [basic signatures](https://cmake.org/cmake/help/latest/command/find_package.html?highlight=find_package#basic-signature) unless you have a known reason.
 ```
-find_package(glfw3 CONFIG REQUIRED)
+find_package(glfw3 REQUIRED)
 ```
 
-We have imported all of the packages we need, so it is safe to include the NanoVG subdirectory in `libs`.
-One of the easily-overlooked quirks of CMake is that every CMakeLists.txt file creates its own variable space. Much like `fork()` in Unix, the child CMakeLists.txt file will INHERIT variables from the parent, but after that is expected to keep its own. If you expect to use libraries or variables in subdirectories, they must be set BEFORE the `add_subdirectory` call.
+We have imported all of the packages we need, so now we need to create an internal project for nanovg. It is no longer considered best-practices to declare the library target in the subdirectory's CMakeLists.txt: remember that CMake variables exist only at the subdirectory level and are not exported back to the parent. Instead we declare an empty nanovg library target as a placeholder.
 
-(There are ways around this as demonstrated in the _assimp_ project, but they are not meant to be used on a regular basis)
 ```
+add_library(nanovg "")
 add_subdirectory(libs/nanovg)
 ```
 
-With all of our includes finished, include directories.
-```
-include_directories(libs/nanovg/src
-  ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_DIRS}
-  ${glfw3_INCLUDE_DIRS}
-)
-```
-
-Declare our executable, found in `src/torus.cpp`
+With all of our includes finished, declare our executable target. The sources consist only of `src/torus.cpp`
 ```
 add_executable(nanovg_torus
   src/torus.cpp
 )
 ```
 
-Link against our libraries. We have a `nanovg` library variable at this point thanks to the `add_subdirectory` call earlier.
+Since the nanovg subdirectory already declares its own list of target include directories, and the torus example does not have any includes, we can procede straight to defining our target link libraries.
+
 ```
 target_link_libraries(nanovg_torus
-  ${GLEW_LIBRARIES}
+  PRIVATE
   nanovg
+  GLEW::GLEW
+  OpenGL::GLU
   glfw
-  ${OPENGL_LIBRARIES}
+  OpenGL::GL
 )
 ```
 ### libs/nanovg/CMakeLists.txt
-Since we are in a subdirectory, we already have a cmake version requirement and a project declared. All that's left is to just declare the library that nanovg builds.
-
-I like to put `STATUS` messages in subdirectory files, if only because it can help debugging later. There is no requirement to do so.
-```
-message(STATUS "processing nanovg")
+Since we are in a subdirectory, we already have a cmake version requirement, a project declared, and a `nanovg` library target to bind to. All that's left is to just declare the specifics of the nanovg library.
 ```
 
 NanoVG mixes its includes and source, so set the `src/` directory for includes.
 ```
-include_directories(src)
+target_include_directories(nanovg
+  PUBLIC
+  src
+)
 ```
-NanoVG is a single source file. By default `add_library` will build a static library, which is fine for a single executable.
+NanoVG is a single source file.
 ```
-add_library(nanovg
+target_sources(nanovg
+  PRIVATE
   src/nanovg.c
 )
 ```
@@ -129,7 +122,7 @@ Let's make our build dir and run cmake like usual:
 ```
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake -S .. -B .
 ```
 
 Then we can make our project. Note that nanovg will be built as a static library before our executable:

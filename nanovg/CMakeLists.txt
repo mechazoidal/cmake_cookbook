@@ -3,7 +3,7 @@ include(CMakePrintHelpers)
 
 project(nanovg_torus VERSION 1.0 LANGUAGES C CXX)
 
-# required for GLU includes and linking
+# This will pull in the OpenGL::GL and OpenGL::GLU link targets
 find_package(OpenGL REQUIRED)
 
 # glew's library is CAPITALIZED..
@@ -27,12 +27,4 @@ target_link_libraries(nanovg_torus
   OpenGL::GLU
   glfw
   OpenGL::GL
-)
-
-cmake_print_variables(OPENGL_GLU_FOUND)
-cmake_print_variables(OPENGL_LIBRARIES)
-
-cmake_print_properties(
-    TARGETS nanovg_torus
-    PROPERTIES LINK_LIBRARIES INCLUDE_DIRECTORIES
 )
